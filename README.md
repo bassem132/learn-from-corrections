@@ -1,12 +1,26 @@
 # Learn from corrections
 
-Turns your corrections into short, durable rules in AGENTS.md so your AI agent stops repeating the same mistakes.
+Every time you correct your AI agent, that lesson is lost when the session ends. This skill turns each correction into a one-line rule in `AGENTS.md`, checked against the rules already there, so the next session already knows it.
 
-A portable agent skill (`SKILL.md`) that works in **Claude Code**, **Codex** and **Cursor**.
+A portable agent skill (`SKILL.md` plus scripts and references) for **Claude Code**, **Codex** and **Cursor**. The scripts have no dependencies (Python 3.8+ / bash 3.2+).
+
+## What's inside
+
+| File | What it does |
+| --- | --- |
+| `skills/learn-from-corrections/SKILL.md` | When it triggers and the step-by-step procedure |
+| `skills/learn-from-corrections/examples.md` | Corrections turned into rules, good vs bad wording, handling conflicts |
+| `skills/learn-from-corrections/reference/where-rules-go.md` | Which file Claude Code, Codex and Cursor read; repo vs user vs nested rules |
+| `skills/learn-from-corrections/templates/AGENTS.md` | Starter rules file |
+| `skills/learn-from-corrections/scripts/lint_agents_md.py` | Linter: duplicates, vague rules, missing reasons, placeholders, size |
+| `adapters/cursor/learn-from-corrections.mdc` | Ready-made Cursor rule |
+| `adapters/codex/AGENTS.snippet.md` | Short version to paste into any `AGENTS.md` |
+| `evals/evals.json` | Test prompts: should it trigger, and what should the agent do |
+| `tests/` | Unit tests for the scripts |
 
 ## Install
 
-### Claude Code (plugin)
+### Claude Code (plugin, recommended)
 
 ```
 /plugin marketplace add bassem132/learn-from-corrections
@@ -26,24 +40,35 @@ cp -r learn-from-corrections/skills/learn-from-corrections ~/.claude/skills/
 cp -r learn-from-corrections/skills/learn-from-corrections ~/.codex/skills/
 ```
 
+Or paste `adapters/codex/AGENTS.snippet.md` into your `AGENTS.md`.
+
 ### Cursor
 
-Copy the folder into your project's `.cursor/skills/`, or paste the body of `SKILL.md` into a rule in `.cursor/rules/learn-from-corrections.mdc`.
-
-## What's inside
-
-```
-skills/learn-from-corrections/SKILL.md              the skill
-skills/learn-from-corrections/examples.md           good and bad rules
-skills/learn-from-corrections/templates/AGENTS.md   starter AGENTS.md
+```bash
+mkdir -p .cursor/rules .cursor/skills
+cp learn-from-corrections/adapters/cursor/learn-from-corrections.mdc .cursor/rules/
+cp -r learn-from-corrections/skills/learn-from-corrections .cursor/skills/      # so the agent can run the scripts
 ```
 
-See [skills/learn-from-corrections/SKILL.md](skills/learn-from-corrections/SKILL.md) for when it triggers and what it does.
+## Try the script
+
+```bash
+python3 skills/learn-from-corrections/scripts/lint_agents_md.py path/to/AGENTS.md
+```
+
+## Develop
+
+```bash
+python3 -m unittest discover -s tests -v
+claude plugin validate .
+```
+
+To check that the skill changes behaviour, run the prompts in `evals/evals.json` in a fresh session with the skill installed. Every `expect` item should hold, and prompts with `should_trigger: false` must not load the skill.
 
 ## Author
 
-Bassem Mo’men — [@bassem132](https://github.com/bassem132)
+Bassem Mo’men · [@bassem132](https://github.com/bassem132)
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

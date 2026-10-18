@@ -1,50 +1,55 @@
 ---
 name: learn-from-corrections
-description: Turn the user's corrections into durable rules in AGENTS.md (or CLAUDE.md). Use when the user corrects you, says "no, do it this way", "don't do X again", "remember that", "always/never ...", or when the same mistake has happened twice in a session.
+description: Turn the user's corrections into short, durable rules in AGENTS.md or CLAUDE.md so the same mistake never happens twice. Use when the user corrects you ("no, use X", "that's wrong, we do Y", "don't do that again", "stop doing X", "remember this", "always…", "never…", "from now on…"), when you notice you made the same mistake twice in a session, or when asked to clean up or audit an AGENTS.md/CLAUDE.md. Do not use for one-off task details that won't matter next session.
 author: Bassem Mo'men
 license: MIT
 ---
 
 # Learn from corrections
 
-A correction the user has to repeat is a correction you failed to learn. This skill turns one-off corrections into short, durable project rules so the next session starts already knowing them.
+A correction the user has to repeat is one you failed to learn. This skill turns one-off corrections into short, durable project rules, so the next session already knows them.
 
 ## When to use
 
-- The user corrects your output, approach, naming, style or tooling choice.
+- The user corrects your output, approach, naming, style or tool choice.
 - The user says "always", "never", "from now on", "remember", "stop doing".
 - You notice you made the same mistake twice.
+- The user asks you to tidy, audit or shrink their rules file.
 
-Do **not** use it for one-time task details ("rename this variable to `x`") that won't matter in future sessions.
-
-## Where rules live
-
-1. `AGENTS.md` at the repo root — read by Codex, Cursor, Claude Code (via import) and most other agents. Prefer this.
-2. `CLAUDE.md` — if the project only has this file, use it. If both exist and `CLAUDE.md` contains `@AGENTS.md`, write to `AGENTS.md`.
-3. If neither exists, offer to create `AGENTS.md` from [templates/AGENTS.md](templates/AGENTS.md).
-
-Personal preferences that apply to every project (tone, language, editor) go to the user-level file instead (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`), never the repo.
+Don't use it for one-time details ("rename this to `x`") or for anything that is secret or specific to one machine.
 
 ## Procedure
 
-1. **Extract the rule.** Rewrite the correction as one imperative line with the reason:
+1. **Extract the rule.** Rewrite the correction as one imperative line that includes the reason:
    `- Use pnpm, not npm — the lockfile is pnpm-lock.yaml.`
-   Make it specific enough to act on and general enough to apply next time.
-2. **Read the existing file** and check for:
-   - **Duplicate** — the rule already exists (maybe worded differently). Don't add it; if you broke an existing rule, say so and strengthen its wording instead.
-   - **Conflict** — an existing rule says the opposite. Show both and ask which wins; replace the loser.
-   - **Wrong section** — put it under the matching heading (Commands, Code style, Testing, Git, Don'ts).
-3. **Ask before saving.** Show the exact line and the file it goes into:
-   > Add to `AGENTS.md` under **Testing**: `- Run tests with `pnpm test -- --run`; watch mode hangs CI.` OK?
-   Save only on a yes. If the user rewords it, use their wording.
-4. **Keep the file small.** If it passes ~150 lines, propose merging overlapping rules or moving detail into a linked doc. Every line costs context in every future session.
-5. **Apply it now.** Redo the corrected work following the new rule.
+   It should be specific enough to act on and general enough to apply next time. If the correction was only "that's wrong", ask what the right behaviour is before writing anything.
+2. **Pick the file and scope.** Use the narrowest file that covers every place the rule applies: repo root, a nested package, or the user-level file. See [reference/where-rules-go.md](reference/where-rules-go.md) for the file each tool reads. If no file exists, offer to create `AGENTS.md` from [templates/AGENTS.md](templates/AGENTS.md).
+3. **Check the existing file.** Read it and look for:
+   - **A duplicate.** The rule is already there, maybe in other words. Don't add it again. If you broke an existing rule, say so and make its wording clearer instead.
+   - **A conflict.** An existing rule says the opposite. Show both and ask which one wins, then replace the other.
+   - **The right section.** File it under Commands, Code style, Testing, Git or Don'ts.
+4. **Ask before saving.** Show the exact line and where it goes:
+   > Add to `AGENTS.md` under **Testing**: `- Run tests with pnpm test -- --run; watch mode hangs CI.` OK?
+   Save only after the user says yes. If they reword it, use their wording.
+5. **Lint after saving.** Run the bundled linter, which flags duplicates, vague rules, missing reasons, leftover placeholders and a file that is too large:
+   ```bash
+   python3 <skill-dir>/scripts/lint_agents_md.py AGENTS.md
+   ```
+   Fix what it reports, or tell the user why a warning doesn't apply.
+6. **Keep the file small.** Every line costs context in every future session. Once the file passes ~150 lines, propose merging overlapping rules or moving detail into a linked doc.
+7. **Apply the rule now.** Redo the corrected work so it follows the new rule.
 
 ## Rule quality checklist
 
 - One line, imperative, starts with a verb.
-- Includes *why* when the reason isn't obvious — agents follow rules with reasons more reliably.
+- Says *why* when the reason isn't obvious. Agents follow rules that have reasons more reliably.
 - Names real commands, paths and tools from this repo.
-- No vague rules ("write clean code", "be careful"). If you can't check whether it was followed, rewrite it.
+- Can be checked. If you can't tell whether a rule was followed, rewrite it.
+- Calm wording. Capitals and "!!!" don't improve compliance; a reason does.
 
-See [examples.md](examples.md) for good and bad rules.
+## Files in this skill
+
+- [examples.md](examples.md): corrections turned into rules, good vs bad wording, handling a conflict.
+- [reference/where-rules-go.md](reference/where-rules-go.md): which file each tool reads, and when to move a rule.
+- [templates/AGENTS.md](templates/AGENTS.md): a starter rules file.
+- [scripts/lint_agents_md.py](scripts/lint_agents_md.py): the rules-file linter (Python 3.8+, no dependencies).

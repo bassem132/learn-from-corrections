@@ -1,7 +1,17 @@
 {
   "name": "learn-from-corrections",
-  "owner": { "name": "Bassem Mo'men" },
+  "owner": {
+    "name": "Bassem Mo'men"
+  },
   "plugins": [
-    { "name": "learn-from-corrections", "source": "./", "description": "Turns your corrections into short, durable rules in AGENTS.md so your AI agent stops repeating the same mistakes." }
-  ]
+    {
+      "name": "learn-from-corrections",
+      "source": "./",
+      "description": "Turns your corrections into short, durable rules in AGENTS.md so your AI agent stops repeating the same mistakes."
+    }
+  ],
+  "metadata": {
+    "description": "Turns your corrections into short, durable rules in AGENTS.md so your AI agent stops repeating the same mistakes.",
+    "version": "1.1.0"
+  }
 }

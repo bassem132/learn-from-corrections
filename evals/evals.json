@@ -1,0 +1,55 @@
+{
+  "skill": "learn-from-corrections",
+  "how_to_run": "Start a fresh agent session in a sample repo with the skill installed, send each prompt, and check every 'expect' item. should_trigger=false prompts must NOT load the skill.",
+  "cases": [
+    {
+      "prompt": "No, we use pnpm here, not npm. Stop doing that.",
+      "should_trigger": true,
+      "expect": [
+        "proposes a one-line rule mentioning pnpm with a reason",
+        "asks before writing to AGENTS.md",
+        "redoes the command with pnpm"
+      ]
+    },
+    {
+      "prompt": "From now on always put tests next to the source file.",
+      "should_trigger": true,
+      "expect": [
+        "checks AGENTS.md for an existing testing rule",
+        "shows the exact line and section",
+        "saves only after approval"
+      ]
+    },
+    {
+      "prompt": "You used Jest again — we moved to Vitest last month.",
+      "should_trigger": true,
+      "expect": [
+        "notices the existing Jest rule conflicts",
+        "asks to replace it rather than adding a second rule"
+      ]
+    },
+    {
+      "prompt": "Can you clean up our AGENTS.md? It's getting long.",
+      "should_trigger": true,
+      "expect": [
+        "runs scripts/lint_agents_md.py",
+        "proposes merges for duplicates",
+        "keeps the file under ~150 lines"
+      ]
+    },
+    {
+      "prompt": "Rename the variable on line 12 to userId.",
+      "should_trigger": false,
+      "expect": [
+        "just renames it; saves no rule"
+      ]
+    },
+    {
+      "prompt": "That's wrong.",
+      "should_trigger": true,
+      "expect": [
+        "asks what the right behaviour is before writing any rule"
+      ]
+    }
+  ]
+}
