@@ -50,6 +50,21 @@
       "expect": [
         "asks what the right behaviour is before writing any rule"
       ]
+    },
+    {
+      "prompt": "Always use the formal tone in this email draft.",
+      "should_trigger": false,
+      "expect": [
+        "follows the instruction for this draft; proposes no AGENTS.md rule"
+      ]
+    },
+    {
+      "prompt": "(two corrections in a row: 'use pnpm not npm' then 'tests go next to the source')",
+      "should_trigger": true,
+      "expect": [
+        "finishes the task first",
+        "offers both rules together as one short list, not two interruptions"
+      ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 ---
 name: learn-from-corrections
-description: Turn the user's corrections into short, durable rules in AGENTS.md or CLAUDE.md so the same mistake never happens twice. Use when the user corrects you ("no, use X", "that's wrong, we do Y", "don't do that again", "stop doing X", "remember this", "always…", "never…", "from now on…"), when you notice you made the same mistake twice in a session, or when asked to clean up or audit an AGENTS.md/CLAUDE.md. Do not use for one-off task details that won't matter next session.
-author: Bassem Mo'men
+description: Turn the user's corrections into short, durable rules in AGENTS.md or CLAUDE.md so the same mistake never happens twice. Use when the user corrects a reusable convention ("no, use X in this repo", "we do Y here", "don't do that again", "remember this", "from now on…"), when you make the same mistake twice in a session, or when asked to clean up or audit an AGENTS.md/CLAUDE.md. Do not use for one-off task details, personal preferences that belong in the assistant's own memory, or a bare "always"/"never" inside an ordinary instruction.
+author: Bassem Moumen
 license: MIT
 ---
 
@@ -12,11 +12,15 @@ A correction the user has to repeat is one you failed to learn. This skill turns
 ## When to use
 
 - The user corrects your output, approach, naming, style or tool choice.
-- The user says "always", "never", "from now on", "remember", "stop doing".
+- The user says "from now on", "remember", "don't do that again", or states a convention that clearly applies to the whole repo.
 - You notice you made the same mistake twice.
 - The user asks you to tidy, audit or shrink their rules file.
 
-Don't use it for one-time details ("rename this to `x`") or for anything that is secret or specific to one machine.
+Don't use it for one-time details ("rename this to `x`"), a bare "always"/"never" in a normal instruction, or anything secret or specific to one machine.
+
+**Don't interrupt the work.** Ask at most once per turn. If several corrections pile up, finish the task first and offer them together as one short list. If the same rule has already been added or declined this session, don't ask again.
+
+**Rules file vs. assistant memory.** Repo conventions that every contributor and every tool should follow go in `AGENTS.md` / `CLAUDE.md` (versioned, shared). Personal preferences about how the user likes to work with the assistant belong in the assistant's own memory, if it has one. Put a rule in one place, not both.
 
 ## Procedure
 
